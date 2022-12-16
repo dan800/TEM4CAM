@@ -1,11 +1,34 @@
 # calc_tem() function to calculate TEM diagnostics on CAM/WACCM output
 # This assumes the data have already been organized into zonal mean fluxes
 # Uzm, THzm, VTHzm, Vzm, UVzm, UWzm, Wzm
-# note that here we are calculating the E-P fluxes on model interface levels, which is ok
+# note that caculations are performed on model interface levels, which is ok
 # in the stratosphere but not in the troposphere.  If interested in tropospheric
-# E-P flux diagnostics, make sure they have been interpolated to pressure already.
+# TEM diagnostics, make sure input fields have been interpolated to true pressure levels.
 
-# based on code developed by Isla Simpson 25 Feb 2021
+# The code follows the 'TEM recipe' from Appendix A of Gerber, E. P. and Manzini, E.:
+# The Dynamics and Variability Model Intercomparison Project (DynVarMIP) for CMIP6:
+# assessing the stratosphere–troposphere system, Geosci. Model Dev., 9, 3413–3425, 
+# https://doi.org/10.5194/gmd-9-3413-2016, 2016 and the corrigendum.
+
+# pdf available here: https://gmd.copernicus.org/articles/9/3413/2016/gmd-9-3413-2016.pdf, 
+# https://gmd.copernicus.org/articles/9/3413/2016/gmd-9-3413-2016-corrigendum.pdf
+
+# Output from post-processing function
+
+# Table A1. Momentum budget variable list (2-D monthly / daily zonal means, YZT).
+
+# Name      Long name [unit]
+
+# epfy      northward component of the Eliassen–Palm flux [m3 s−2]
+# epfz      upward component of the Eliassen–Palm flux [m3 s−2]
+# vtem      Transformed Eulerian mean northward wind [m s−1] 
+# wtem      Transformed Eulerian mean upward wind [m s−1]
+# psitem    Transformed Eulerian mean mass stream function [kg s−1]
+# utendepfd tendency of eastward wind due to Eliassen–Palm flux divergence [m s−2]
+# utendvtem tendency of eastward wind due to TEM northward wind advection and the Coriolis term [m s−2] 
+# utendwtem tendency of eastward wind due to TEM upward wind advection [m s−2]
+
+# this utility based on python code developed by Isla Simpson 25 Feb 2021
 # initial coding of stand alone function by Dan Marsh 16 Dec 2022
 
 # NOTE: function expects an xarray dataset with dataarrays of dimension (nlev,nlat)
@@ -99,11 +122,11 @@ def calc_tem(ds):
     utendvtem = vtem*(f2d - dudphi) 
 
     # calculate E-P fluxes
-    epfy = a*coslat2d*(dudp*psieddy - uvzm) # A2
-    epfz = a*coslat2d*((f2d-dudphi)*psieddy - uwzm) # A3
+    epfy = a*coslat2d*(dudp*psieddy - uvzm) # Eq A2
+    epfz = a*coslat2d*((f2d-dudphi)*psieddy - uwzm) # Eq A3
 
     # calculate E-P flux divergence and zonal wind tendency 
-    # due to resolved waves (A5)
+    # due to resolved waves (Eq A5)
     depfydphi = (1./(a*coslat2d)) \
               * np.gradient(epfy*coslat2d,
                             latrad, 
@@ -116,7 +139,7 @@ def calc_tem(ds):
     utendepfd = (depfydphi + depfzdp)/(a*coslat2d)
     utendepfd = xr.DataArray(utendepfd, coords = ds.Uzm.coords, name='utendepfd')
                              
-    # TEM stream function, Eq (A8)
+    # TEM stream function, Eq A8
     topvzm = np.zeros([1,nlat])
     vzmwithzero = np.concatenate((topvzm, vzm), axis=0)
     prewithzero = np.concatenate((np.zeros([1]), pre))
