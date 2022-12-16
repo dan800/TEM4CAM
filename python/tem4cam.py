@@ -8,6 +8,11 @@
 # based on code developed by Isla Simpson 25 Feb 2021
 # initial coding of stand alone function by Dan Marsh 16 Dec 2022
 
+# NOTE: function expects an xarray dataset with dataarrays of dimension (nlev,nlat)
+# to process more than one timestep interate over time. See calcTEM.ipynb notebook
+# for an example of processed a file or files with more than one timestep.
+
+
 import xarray as xr
 import numpy as np
 from scipy import integrate
