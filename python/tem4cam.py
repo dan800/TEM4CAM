@@ -151,6 +151,7 @@ def calc_tem(ds):
     epfz = -1.*(H/p0)*epfz  # A14
     wtem = -1.*(H/pre)*wtem # A16
 
+    # 
     # add long name and unit attributes to TEM diagnostics
     epfy.attrs['long_name'] = 'northward component of E-P flux'
     epfy.attrs['units'] = 'm3/s2'
@@ -175,7 +176,16 @@ def calc_tem(ds):
     
     utendwtem.attrs['long_name'] = 'tendency of eastward wind due to TEM upward wind advection'
     utendwtem.attrs['units'] = 'm/s2'
-    
+ 
+    epfy.values = np.float32(epfy.values)
+    epfz.values = np.float32(epfz.values)
+    wtem.values = np.float32(wtem.values)
+    psitem.values = np.float32(psitem.values)
+    utendepfd.values = np.float32(utendepfd.values)
+    utendvtem.values = np.float32(utendvtem.values)
+    utendwtem.values = np.float32(utendwtem.values)
+
+  
     dstem = xr.Dataset(data_vars=dict(date = ds.date,
                                       datesec = ds.datesec,
                                       time_bnds = ds.time_bnds,
