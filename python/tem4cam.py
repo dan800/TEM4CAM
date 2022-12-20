@@ -77,7 +77,6 @@ def calc_tem(ds):
     uwzm.values = ma.masked_greater_equal(uwzm, 1e33)
     vthzm = ds['VTHzm']
     vthzm.values = ma.masked_greater_equal(vthzm, 1e33)
-
     
     # convert w terms from m/s to Pa/s
     wzm  = -1.*wzm*pre/H
@@ -185,7 +184,6 @@ def calc_tem(ds):
     utendvtem.values = np.float32(utendvtem.values)
     utendwtem.values = np.float32(utendwtem.values)
 
-  
     dstem = xr.Dataset(data_vars=dict(date = ds.date,
                                       datesec = ds.datesec,
                                       time_bnds = ds.time_bnds,
