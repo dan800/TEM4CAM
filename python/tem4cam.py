@@ -156,7 +156,7 @@ def calc_tem(ds):
     epfy.attrs['units'] = 'm3/s2'
     
     epfz.attrs['long_name'] = 'upward component of E-P flux'
-    epfz.attrs['units'] = 'm2/s2'
+    epfz.attrs['units'] = 'm3/s2'
 
     vtem.attrs['long_name'] = 'Transformed Eulerian mean northward wind'
     vtem.attrs['units'] = 'm/s'
