@@ -50,14 +50,14 @@ def calc_tem(ds):
     H = 7000.
     g0 = 9.80665
 
-    nlat = ds['lat'].size
-    nlev = ds['ilev'].size
+    nlat = ds['zalat'].size
+    nlev = ds['lev'].size
 
-    latrad = np.radians(ds.lat)
+    latrad = np.radians(ds.zalat)
     coslat = np.cos(latrad)
     coslat2d = np.tile(coslat,(nlev,1))
     
-    pre = ds['ilev']*100. # pressure levels in Pascals
+    pre = ds['lev']*100. # pressure levels in Pascals
     f = 2.*om*np.sin(latrad[:])
     f2d = np.tile(f,(nlev,1))
     
